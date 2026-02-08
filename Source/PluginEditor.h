@@ -99,8 +99,8 @@ private:
     std::unique_ptr<SliderAttach> outGainAttach;
 
     // ── Store buttons ──────────────────────────────────────────────────
-    juce::TextButton storeABtn { "STORE \xe2\x86\x92 A" };
-    juce::TextButton storeBBtn { "STORE \xe2\x86\x92 B" };
+    juce::TextButton storeABtn;
+    juce::TextButton storeBBtn;
     int storeFlashA_ = 0;
     int storeFlashB_ = 0;
 

@@ -2,6 +2,12 @@
 #include "PluginEditor.h"
 
 //==============================================================================
+// Unicode icon constants (platform-safe — avoids raw hex escapes that break on MSVC)
+static const juce::String kIconCollapsed = juce::String::charToString (0x25B8);  // ▸
+static const juce::String kIconExpanded  = juce::String::charToString (0x25BE);  // ▾
+static const juce::String kIconArrow     = juce::String::charToString (0x2192);  // →
+
+//==============================================================================
 // Helpers
 
 static juce::String svToString (std::string_view sv)
@@ -263,12 +269,14 @@ MacroMorphFXEditor::MacroMorphFXEditor (MacroMorphFXProcessor& p)
     addAndMakeVisible (outGainLabel);
 
     // ── Store buttons ───────────────────────────────────────────────────
+    storeABtn.setButtonText ("STORE " + kIconArrow + " A");
     storeABtn.setColour (juce::TextButton::buttonColourId,  juce::Colour (0xff2d333b));
     storeABtn.setColour (juce::TextButton::textColourOffId, colText);
     storeABtn.setTooltip ("Flatten current morph+macro sound into Scene A slot");
     storeABtn.onClick = [this] { storeToScene (true); };
     addAndMakeVisible (storeABtn);
 
+    storeBBtn.setButtonText ("STORE " + kIconArrow + " B");
     storeBBtn.setColour (juce::TextButton::buttonColourId,  juce::Colour (0xff2d333b));
     storeBBtn.setColour (juce::TextButton::textColourOffId, colText);
     storeBBtn.setTooltip ("Flatten current morph+macro sound into Scene B slot");
@@ -276,7 +284,7 @@ MacroMorphFXEditor::MacroMorphFXEditor (MacroMorphFXProcessor& p)
     addAndMakeVisible (storeBBtn);
 
     // ── Module panel toggle ─────────────────────────────────────────────
-    modulePanelToggle.setButtonText ("\xe2\x96\xb8 MODULES");
+    modulePanelToggle.setButtonText (kIconCollapsed + " MODULES");
     modulePanelToggle.setColour (juce::TextButton::buttonColourId,  colPanel);
     modulePanelToggle.setColour (juce::TextButton::textColourOffId, colTextDim);
     modulePanelToggle.onClick = [this] { toggleModulePanel(); };
@@ -345,7 +353,7 @@ MacroMorphFXEditor::MacroMorphFXEditor (MacroMorphFXProcessor& p)
     addChildComponent (editTargetBtn_);
 
     // ── Macro config toggle ─────────────────────────────────────────────
-    macroConfigToggle_.setButtonText ("\xe2\x96\xb8 MACRO CONFIG");
+    macroConfigToggle_.setButtonText (kIconCollapsed + " MACRO CONFIG");
     macroConfigToggle_.setColour (juce::TextButton::buttonColourId,  colPanel);
     macroConfigToggle_.setColour (juce::TextButton::textColourOffId, colTextDim);
     macroConfigToggle_.onClick = [this] { toggleMacroConfig(); };
@@ -631,12 +639,12 @@ void MacroMorphFXEditor::timerCallback()
     // ── Store flash countdown ───────────────────────────────────────────
     if (storeFlashA_ > 0 && --storeFlashA_ == 0)
     {
-        storeABtn.setButtonText ("STORE \xe2\x86\x92 A");
+        storeABtn.setButtonText ("STORE " + kIconArrow + " A");
         storeABtn.setColour (juce::TextButton::buttonColourId, juce::Colour (0xff2d333b));
     }
     if (storeFlashB_ > 0 && --storeFlashB_ == 0)
     {
-        storeBBtn.setButtonText ("STORE \xe2\x86\x92 B");
+        storeBBtn.setButtonText ("STORE " + kIconArrow + " B");
         storeBBtn.setColour (juce::TextButton::buttonColourId, juce::Colour (0xff2d333b));
     }
 }
@@ -711,8 +719,8 @@ void MacroMorphFXEditor::toggleModulePanel()
     modulePanelOpen_ = ! modulePanelOpen_;
 
     modulePanelToggle.setButtonText (modulePanelOpen_
-        ? "\xe2\x96\xbe MODULES"
-        : "\xe2\x96\xb8 MODULES");
+        ? kIconExpanded + " MODULES"
+        : kIconCollapsed + " MODULES");
 
     for (int i = 0; i < 4; ++i)
         moduleHeaders[i].setVisible (modulePanelOpen_);
@@ -779,8 +787,8 @@ void MacroMorphFXEditor::toggleMacroConfig()
     macroConfigOpen_ = ! macroConfigOpen_;
 
     macroConfigToggle_.setButtonText (macroConfigOpen_
-        ? "\xe2\x96\xbe MACRO CONFIG"
-        : "\xe2\x96\xb8 MACRO CONFIG");
+        ? kIconExpanded + " MACRO CONFIG"
+        : kIconCollapsed + " MACRO CONFIG");
 
     for (int m = 0; m < 4; ++m)
     {
